@@ -16,7 +16,7 @@ namespace Mesa_de_Partes_1
         {
             InitializeComponent();
 
-            dgvPersonas.Columns.Add("colDni", "DNI");
+            dgvPersonas.Columns.Add("colNumeroDocumento", "Documento");
             dgvPersonas.Columns.Add("colNombres", "Nombres");
             dgvPersonas.Columns.Add("colApellidos", "Apellidos");
             dgvPersonas.Columns.Add("colTeléfono", "Teléfono");
@@ -26,36 +26,36 @@ namespace Mesa_de_Partes_1
 
         private void button1_Click(object sender, EventArgs e)
         {
-            string dni = txtDni.Text;
-            string nombres = txtNombres.Text;
-            string apellidos = txtApellidos.Text;
-            string telefono = txtTelefono.Text;
-            string asunto = txtAsunto.Text;
+            string NumeroDocumento = txtNumeroDocumento.Text;
+            string Nombres = txtNombres.Text;
+            string Apellidos = txtApellidos.Text;
+            string Telefono = txtTelefono.Text;
+            string Asunto = txtAsunto.Text;
 
-            MessageBox.Show("DNI: " + dni +
-                "\nNombres: " + nombres +
-                "\nApellidos: " + apellidos +
-                "\nTeléfono: " + telefono +
-                "\nAsunto: " + asunto);
+            MessageBox.Show("NumeroDocumento: " + NumeroDocumento +
+                "\nNombres: " + Nombres +
+                "\nApellidos: " + Apellidos +
+                "\nTeléfono: " + Telefono +
+                "\nAsunto: " + Asunto);
 
 
-            if (dni.Length != 8)
+            if (NumeroDocumento.Length != 8)
             {
                 MessageBox.Show("El DNI debe tener 8 dígitos.");
                 return;
             }
 
-            if (nombres == "" || apellidos == "")
+            if (Nombres == "" || Apellidos == "")
             {
                 MessageBox.Show("Ingrese nombres y apellidos.");
                 return;
             }
 
-            dgvPersonas.Rows.Add(dni, nombres, apellidos, telefono, asunto);
+            dgvPersonas.Rows.Add(NumeroDocumento, Nombres, Apellidos, Telefono, Asunto);
 
             MessageBox.Show("Persona registrada correctamente.");
 
-            txtDni.Clear();
+            txtNumeroDocumento.Clear();
             txtNombres.Clear();
             txtApellidos.Clear();
             txtTelefono.Clear();
@@ -66,6 +66,16 @@ namespace Mesa_de_Partes_1
         private void txtDni_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void lblDni_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            
         }
     }
 }
