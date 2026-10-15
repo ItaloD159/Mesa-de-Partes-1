@@ -44,7 +44,7 @@
             this.lblDni = new System.Windows.Forms.Label();
             this.lblTitulo = new System.Windows.Forms.Label();
             this.dgvPersonas = new System.Windows.Forms.DataGridView();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.CBTipoDocumento = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.grpPersona.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPersonas)).BeginInit();
@@ -53,7 +53,7 @@
             // grpPersona
             // 
             this.grpPersona.Controls.Add(this.label1);
-            this.grpPersona.Controls.Add(this.comboBox1);
+            this.grpPersona.Controls.Add(this.CBTipoDocumento);
             this.grpPersona.Controls.Add(this.btnBuscar);
             this.grpPersona.Controls.Add(this.btnLimpiar);
             this.grpPersona.Controls.Add(this.btnRegistrar);
@@ -71,7 +71,7 @@
             this.grpPersona.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.grpPersona.Name = "grpPersona";
             this.grpPersona.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.grpPersona.Size = new System.Drawing.Size(282, 396);
+            this.grpPersona.Size = new System.Drawing.Size(326, 396);
             this.grpPersona.TabIndex = 0;
             this.grpPersona.TabStop = false;
             this.grpPersona.Text = "Datos de la persona";
@@ -95,6 +95,7 @@
             this.btnLimpiar.TabIndex = 12;
             this.btnLimpiar.Text = "Limpiar";
             this.btnLimpiar.UseVisualStyleBackColor = true;
+            this.btnLimpiar.Click += new System.EventHandler(this.btnLimpiar_Click);
             // 
             // btnRegistrar
             // 
@@ -112,7 +113,7 @@
             this.txtAsunto.Location = new System.Drawing.Point(152, 221);
             this.txtAsunto.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.txtAsunto.Name = "txtAsunto";
-            this.txtAsunto.Size = new System.Drawing.Size(114, 20);
+            this.txtAsunto.Size = new System.Drawing.Size(147, 20);
             this.txtAsunto.TabIndex = 10;
             // 
             // txtTelefono
@@ -120,7 +121,7 @@
             this.txtTelefono.Location = new System.Drawing.Point(152, 192);
             this.txtTelefono.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.txtTelefono.Name = "txtTelefono";
-            this.txtTelefono.Size = new System.Drawing.Size(114, 20);
+            this.txtTelefono.Size = new System.Drawing.Size(147, 20);
             this.txtTelefono.TabIndex = 9;
             // 
             // txtApellidos
@@ -128,7 +129,7 @@
             this.txtApellidos.Location = new System.Drawing.Point(152, 161);
             this.txtApellidos.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.txtApellidos.Name = "txtApellidos";
-            this.txtApellidos.Size = new System.Drawing.Size(114, 20);
+            this.txtApellidos.Size = new System.Drawing.Size(147, 20);
             this.txtApellidos.TabIndex = 8;
             // 
             // txtNombres
@@ -136,7 +137,7 @@
             this.txtNombres.Location = new System.Drawing.Point(152, 130);
             this.txtNombres.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.txtNombres.Name = "txtNombres";
-            this.txtNombres.Size = new System.Drawing.Size(114, 20);
+            this.txtNombres.Size = new System.Drawing.Size(147, 20);
             this.txtNombres.TabIndex = 7;
             // 
             // txtNumeroDocumento
@@ -144,7 +145,7 @@
             this.txtNumeroDocumento.Location = new System.Drawing.Point(152, 100);
             this.txtNumeroDocumento.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.txtNumeroDocumento.Name = "txtNumeroDocumento";
-            this.txtNumeroDocumento.Size = new System.Drawing.Size(114, 20);
+            this.txtNumeroDocumento.Size = new System.Drawing.Size(147, 20);
             this.txtNumeroDocumento.TabIndex = 6;
             this.txtNumeroDocumento.TextChanged += new System.EventHandler(this.txtDni_TextChanged);
             // 
@@ -208,7 +209,7 @@
             // 
             this.lblTitulo.AutoSize = true;
             this.lblTitulo.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.lblTitulo.Location = new System.Drawing.Point(404, 9);
+            this.lblTitulo.Location = new System.Drawing.Point(521, 8);
             this.lblTitulo.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblTitulo.Name = "lblTitulo";
             this.lblTitulo.Size = new System.Drawing.Size(169, 13);
@@ -220,7 +221,7 @@
             this.dgvPersonas.AllowUserToAddRows = false;
             this.dgvPersonas.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvPersonas.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvPersonas.Location = new System.Drawing.Point(286, 24);
+            this.dgvPersonas.Location = new System.Drawing.Point(356, 23);
             this.dgvPersonas.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.dgvPersonas.MultiSelect = false;
             this.dgvPersonas.Name = "dgvPersonas";
@@ -228,23 +229,22 @@
             this.dgvPersonas.RowHeadersWidth = 51;
             this.dgvPersonas.RowTemplate.Height = 24;
             this.dgvPersonas.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvPersonas.Size = new System.Drawing.Size(397, 362);
+            this.dgvPersonas.Size = new System.Drawing.Size(483, 362);
             this.dgvPersonas.TabIndex = 1;
             // 
-            // comboBox1
+            // CBTipoDocumento
             // 
-            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
+            this.CBTipoDocumento.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.CBTipoDocumento.FormattingEnabled = true;
+            this.CBTipoDocumento.Items.AddRange(new object[] {
             "DNI",
             "RUC",
-            "CE",
-            "RUC EXTRANJEROS NO DOMICILIADOS"});
-            this.comboBox1.Location = new System.Drawing.Point(152, 66);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(114, 21);
-            this.comboBox1.TabIndex = 14;
-            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            "CE"});
+            this.CBTipoDocumento.Location = new System.Drawing.Point(152, 66);
+            this.CBTipoDocumento.Name = "CBTipoDocumento";
+            this.CBTipoDocumento.Size = new System.Drawing.Size(147, 21);
+            this.CBTipoDocumento.TabIndex = 14;
+            this.CBTipoDocumento.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
             // label1
             // 
@@ -295,7 +295,7 @@
         private System.Windows.Forms.Button btnRegistrar;
         private System.Windows.Forms.DataGridView dgvPersonas;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox CBTipoDocumento;
     }
 }
 

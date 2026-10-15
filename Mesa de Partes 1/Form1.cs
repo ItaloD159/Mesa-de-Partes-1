@@ -26,23 +26,56 @@ namespace Mesa_de_Partes_1
 
         private void button1_Click(object sender, EventArgs e)
         {
+
+            //Valida si se eligió un tipo de documento
+            if (CBTipoDocumento.SelectedItem == null)
+            {
+                MessageBox.Show("Seleccione un tipo de documento."); CBTipoDocumento.Focus();
+                return;
+            }
+
+            string TipoDocumento = CBTipoDocumento.SelectedItem.ToString(); //Tipo de documento seleccionado
+
             string NumeroDocumento = txtNumeroDocumento.Text;
             string Nombres = txtNombres.Text;
             string Apellidos = txtApellidos.Text;
             string Telefono = txtTelefono.Text;
             string Asunto = txtAsunto.Text;
 
-            MessageBox.Show("NumeroDocumento: " + NumeroDocumento +
-                "\nNombres: " + Nombres +
-                "\nApellidos: " + Apellidos +
-                "\nTeléfono: " + Telefono +
-                "\nAsunto: " + Asunto);
+
+            //MessageBox.Show("NumeroDocumento: " + NumeroDocumento +
+                //"\nNombres: " + Nombres +
+                //"\nApellidos: " + Apellidos +
+                //"\nTeléfono: " + Telefono +
+                //"\nAsunto: " + Asunto);
 
 
-            if (NumeroDocumento.Length != 8)
+            // Validación de campos del tipo de documento
+            if (TipoDocumento == "DNI")
             {
-                MessageBox.Show("El DNI debe tener 8 dígitos.");
-                return;
+                if (NumeroDocumento.Length != 8)
+                {
+                    MessageBox.Show("El DNI debe tener 8 dígitos.");
+                    return;
+                }
+            }
+
+            if (TipoDocumento == "RUC") 
+            {
+                if (NumeroDocumento.Length != 11) 
+                {
+                    MessageBox.Show("El RUC debe tener 11 dígitos.");
+                    return;
+                }
+            }
+
+            if (TipoDocumento == "CE")
+            {
+                if (NumeroDocumento.Length != 11)
+                {
+                    MessageBox.Show("La Cédula de Extranjería debe tener 11 dígitos.");
+                    return;
+                }
             }
 
             if (Nombres == "" || Apellidos == "")
@@ -60,7 +93,8 @@ namespace Mesa_de_Partes_1
             txtApellidos.Clear();
             txtTelefono.Clear();
             txtAsunto.Clear();
-
+            txtNumeroDocumento.Focus();
+            CBTipoDocumento.SelectedIndex = -1;
         }
 
         private void txtDni_TextChanged(object sender, EventArgs e)
@@ -76,6 +110,17 @@ namespace Mesa_de_Partes_1
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             
+        }
+
+        private void btnLimpiar_Click(object sender, EventArgs e)
+        {
+            txtNumeroDocumento.Clear();
+            txtNombres.Clear();
+            txtApellidos.Clear();
+            txtTelefono.Clear();
+            txtAsunto.Clear();
+            txtNumeroDocumento.Focus();
+            CBTipoDocumento.SelectedIndex = -1;
         }
     }
 }
