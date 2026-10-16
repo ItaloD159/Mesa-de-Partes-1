@@ -38,7 +38,7 @@ namespace Mesa_de_Partes_1
             //Valida si se eligió un tipo de documento
             if (CBTipoDocumento.SelectedItem == null)
             {
-                MessageBox.Show("Seleccione un tipo de documento."); CBTipoDocumento.Focus();
+                MessageBox.Show("Seleccione un tipo de documento.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning); CBTipoDocumento.Focus();
                 return;
             }
 
@@ -95,18 +95,18 @@ namespace Mesa_de_Partes_1
             }
 
             //Colocamos los datos en la tabla
-            // Generamos el código del expediente
+            //Generamos el código del expediente
             string codigoExpediente =
                 "EXP-" + DateTime.Now.Year + "-" +
                 correlativo.ToString("D4");
 
-            // Obtenemos la fecha y hora actuales
+            //Obtenemos la fecha y hora actuales
             string fechaRegistro = DateTime.Now.ToString("dd/MM/yyyy HH:mm");
 
-            // Asignamos el estado inicial
+            //Asignamos el estado inicial
             string estado = "Pendiente";
 
-            // Registramos los datos en la tabla
+            //Registramos los datos en la tabla
             dgvPersonas.Rows.Add(
                 codigoExpediente,
                 fechaRegistro,
@@ -212,6 +212,16 @@ namespace Mesa_de_Partes_1
         }
 
         private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblTitulo_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtNumeroDocumento_KeyPress(object sender, KeyPressEventArgs e)
         {
 
         }
