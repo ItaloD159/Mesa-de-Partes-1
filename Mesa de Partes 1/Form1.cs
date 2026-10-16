@@ -12,16 +12,23 @@ namespace Mesa_de_Partes_1
 {
     public partial class Form1 : Form
     {
+        private int correlativo = 1;
         public Form1()
         {
             InitializeComponent();
 
-            dgvPersonas.Columns.Add("colNumeroDocumento", "Documento");
+            dgvPersonas.Columns.Clear();
+
+            dgvPersonas.Columns.Add("colExpediente", "N° Expediente");
+            dgvPersonas.Columns.Add("colFecha", "Fecha de registro");
+            dgvPersonas.Columns.Add("colTipoDocumento", "Tipo documento");
+            dgvPersonas.Columns.Add("colNumeroDocumento", "N° Documento");
             dgvPersonas.Columns.Add("colNombres", "Nombres");
-            dgvPersonas.Columns.Add("colApellidoPaterno", "Apellido Paterno");
-            dgvPersonas.Columns.Add("colApellidoMaterno", "Apellido Materno");
-            dgvPersonas.Columns.Add("colTeléfono", "Teléfono");
+            dgvPersonas.Columns.Add("colApellidoPaterno", "Apellido paterno");
+            dgvPersonas.Columns.Add("colApellidoMaterno", "Apellido materno");
+            dgvPersonas.Columns.Add("colTelefono", "Teléfono");
             dgvPersonas.Columns.Add("colAsunto", "Asunto");
+            dgvPersonas.Columns.Add("colEstado", "Estado");
 
         }
 
@@ -88,9 +95,40 @@ namespace Mesa_de_Partes_1
             }
 
             //Colocamos los datos en la tabla
-            dgvPersonas.Rows.Add(NumeroDocumento, Nombres, ApellidoPaterno, ApellidoMaterno, Telefono, Asunto);
+            // Generamos el código del expediente
+            string codigoExpediente =
+                "EXP-" + DateTime.Now.Year + "-" +
+                correlativo.ToString("D4");
 
-            MessageBox.Show("Persona registrada correctamente.", "Registrado", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            // Obtenemos la fecha y hora actuales
+            string fechaRegistro = DateTime.Now.ToString("dd/MM/yyyy HH:mm");
+
+            // Asignamos el estado inicial
+            string estado = "Pendiente";
+
+            // Registramos los datos en la tabla
+            dgvPersonas.Rows.Add(
+                codigoExpediente,
+                fechaRegistro,
+                TipoDocumento,
+                NumeroDocumento,
+                Nombres,
+                ApellidoPaterno,
+                ApellidoMaterno,
+                Telefono,
+                Asunto,
+                estado
+            );
+
+            // Aumentamos el correlativo para el siguiente expediente
+            correlativo++;
+
+            MessageBox.Show(
+                "Expediente registrado correctamente: " + codigoExpediente,
+                "Registro exitoso",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
 
             txtNumeroDocumento.Clear();
             txtNombres.Clear();
@@ -146,15 +184,20 @@ namespace Mesa_de_Partes_1
                 //Buscamos en todas las filas del DataGridView
                 foreach (DataGridViewRow fila in dgvPersonas.Rows)
                 {
-                    string documentoEnTabla = fila.Cells[0].Value.ToString();
 
-                    if (documentoEnTabla == DocumentoBuscado)
+                if (fila.IsNewRow || fila.Cells[3].Value == null)
+                    continue;
+
+                string documentoEnTabla =
+                    fila.Cells[3].Value.ToString();
+
+                if (documentoEnTabla == DocumentoBuscado)
                     {
                         //Se selecciona la fila en la tabla si se encuentra registrada
                         fila.Selected = true;
-                        dgvPersonas.CurrentCell = fila.Cells[0]; //Salta visualmente a la fila
+                        dgvPersonas.CurrentCell = fila.Cells[3]; //Salta visualmente a la fila
 
-                        MessageBox.Show("¡Registro encontrado!", "Búsqueda", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("¡Registro encontrado!", "Búsqueda", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         encontrado = true;
                         break;
                     }
@@ -166,6 +209,11 @@ namespace Mesa_de_Partes_1
                     MessageBox.Show("No se encontró ningún registro con ese número de documento.", "Sin resultados", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
