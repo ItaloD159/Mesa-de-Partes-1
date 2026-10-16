@@ -18,7 +18,8 @@ namespace Mesa_de_Partes_1
 
             dgvPersonas.Columns.Add("colNumeroDocumento", "Documento");
             dgvPersonas.Columns.Add("colNombres", "Nombres");
-            dgvPersonas.Columns.Add("colApellidos", "Apellidos");
+            dgvPersonas.Columns.Add("colApellidoPaterno", "Apellido Paterno");
+            dgvPersonas.Columns.Add("colApellidoMaterno", "Apellido Materno");
             dgvPersonas.Columns.Add("colTeléfono", "Teléfono");
             dgvPersonas.Columns.Add("colAsunto", "Asunto");
 
@@ -36,11 +37,13 @@ namespace Mesa_de_Partes_1
 
             string TipoDocumento = CBTipoDocumento.SelectedItem.ToString(); //Tipo de documento seleccionado
 
-            string NumeroDocumento = txtNumeroDocumento.Text;
-            string Nombres = txtNombres.Text;
-            string Apellidos = txtApellidos.Text;
-            string Telefono = txtTelefono.Text;
-            string Asunto = txtAsunto.Text;
+            //Variables donde almacenamos los datos ingresados por el usuario
+            string NumeroDocumento = txtNumeroDocumento.Text.Trim().ToUpper();
+            string Nombres = txtNombres.Text.Trim().ToUpper();
+            string ApellidoPaterno = txtApellidoPaterno.Text.Trim().ToUpper();
+            string ApellidoMaterno = txtApellidoMaterno.Text.Trim().ToUpper();
+            string Telefono = txtTelefono.Text.Trim().ToUpper();
+            string Asunto = txtAsunto.Text.Trim().ToUpper();
 
 
             //MessageBox.Show("NumeroDocumento: " + NumeroDocumento +
@@ -55,7 +58,7 @@ namespace Mesa_de_Partes_1
             {
                 if (NumeroDocumento.Length != 8)
                 {
-                    MessageBox.Show("El DNI debe tener 8 dígitos.");
+                    MessageBox.Show("El DNI debe tener 8 dígitos.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
             }
@@ -64,7 +67,7 @@ namespace Mesa_de_Partes_1
             {
                 if (NumeroDocumento.Length != 11) 
                 {
-                    MessageBox.Show("El RUC debe tener 11 dígitos.");
+                    MessageBox.Show("El RUC debe tener 11 dígitos.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
             }
@@ -73,24 +76,26 @@ namespace Mesa_de_Partes_1
             {
                 if (NumeroDocumento.Length != 11)
                 {
-                    MessageBox.Show("La Cédula de Extranjería debe tener 11 dígitos.");
+                    MessageBox.Show("La Cédula de Extranjería debe tener 11 dígitos.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
             }
 
-            if (Nombres == "" || Apellidos == "")
+            if (Nombres == "" || ApellidoPaterno == "" || ApellidoMaterno == "")
             {
-                MessageBox.Show("Ingrese nombres y apellidos.");
+                MessageBox.Show("Ingrese nombres y apellidos.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            dgvPersonas.Rows.Add(NumeroDocumento, Nombres, Apellidos, Telefono, Asunto);
+            //Colocamos los datos en la tabla
+            dgvPersonas.Rows.Add(NumeroDocumento, Nombres, ApellidoPaterno, ApellidoMaterno, Telefono, Asunto);
 
-            MessageBox.Show("Persona registrada correctamente.");
+            MessageBox.Show("Persona registrada correctamente.", "Registrado", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             txtNumeroDocumento.Clear();
             txtNombres.Clear();
-            txtApellidos.Clear();
+            txtApellidoPaterno.Clear();
+            txtApellidoMaterno.Clear();
             txtTelefono.Clear();
             txtAsunto.Clear();
             txtNumeroDocumento.Focus();
@@ -112,15 +117,55 @@ namespace Mesa_de_Partes_1
             
         }
 
+        //Botón limpiar campos
         private void btnLimpiar_Click(object sender, EventArgs e)
         {
             txtNumeroDocumento.Clear();
             txtNombres.Clear();
-            txtApellidos.Clear();
+            txtApellidoPaterno.Clear();
+            txtApellidoMaterno.Clear();
             txtTelefono.Clear();
             txtAsunto.Clear();
             txtNumeroDocumento.Focus();
             CBTipoDocumento.SelectedIndex = -1;
+        }
+
+        //Búsqueda de registros por número de documento
+        private void btnBuscar_Click(object sender, EventArgs e)
+        {
+            string DocumentoBuscado = txtBuscarDocumento.Text.Trim().ToUpper();
+
+            //Validamos si el campo está vacío antes de realizar la búsqueda
+            if (DocumentoBuscado == "")
+            {
+                MessageBox.Show("Ingrese un número de documento para buscar.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+                bool encontrado = false;
+
+                //Buscamos en todas las filas del DataGridView
+                foreach (DataGridViewRow fila in dgvPersonas.Rows)
+                {
+                    string documentoEnTabla = fila.Cells[0].Value.ToString();
+
+                    if (documentoEnTabla == DocumentoBuscado)
+                    {
+                        //Se selecciona la fila en la tabla si se encuentra registrada
+                        fila.Selected = true;
+                        dgvPersonas.CurrentCell = fila.Cells[0]; //Salta visualmente a la fila
+
+                        MessageBox.Show("¡Registro encontrado!", "Búsqueda", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        encontrado = true;
+                        break;
+                    }
+                }
+
+            //No se encontró ningún registro con ese número de documento
+            if (!encontrado)
+                {
+                    MessageBox.Show("No se encontró ningún registro con ese número de documento.", "Sin resultados", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            
         }
     }
 }
