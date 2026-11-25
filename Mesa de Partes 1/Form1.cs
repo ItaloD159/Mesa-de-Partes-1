@@ -26,7 +26,9 @@ namespace Mesa_de_Partes_1
             dgvPersonas.Columns.Add("colNombres", "Nombres");
             dgvPersonas.Columns.Add("colApellidoPaterno", "Apellido paterno");
             dgvPersonas.Columns.Add("colApellidoMaterno", "Apellido materno");
+            dgvPersonas.Columns.Add("colCorreo", "Correo electrónico");
             dgvPersonas.Columns.Add("colTelefono", "Teléfono");
+            dgvPersonas.Columns.Add("colTipoExpediente", "Tipo de expediente");
             dgvPersonas.Columns.Add("colAsunto", "Asunto");
             dgvPersonas.Columns.Add("colEstado", "Estado");
 
@@ -41,6 +43,11 @@ namespace Mesa_de_Partes_1
                 MessageBox.Show("Seleccione un tipo de documento.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning); CBTipoDocumento.Focus();
                 return;
             }
+            if (CBTipoExpediente.SelectedItem == null)
+            {
+                MessageBox.Show("Seleccione un tipo de expediente.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning); CBTipoExpediente.Focus();
+                return;
+            }
 
             string TipoDocumento = CBTipoDocumento.SelectedItem.ToString(); //Tipo de documento seleccionado
 
@@ -49,8 +56,11 @@ namespace Mesa_de_Partes_1
             string Nombres = txtNombres.Text.Trim().ToUpper();
             string ApellidoPaterno = txtApellidoPaterno.Text.Trim().ToUpper();
             string ApellidoMaterno = txtApellidoMaterno.Text.Trim().ToUpper();
+            string CorreoElectronico = txtCorreo.Text.Trim().ToUpper();
             string Telefono = txtTelefono.Text.Trim().ToUpper();
+            string TipoExpediente = CBTipoExpediente.SelectedItem.ToString(); //Tipo de expediente seleccionado
             string Asunto = txtAsunto.Text.Trim().ToUpper();
+            
 
 
             //MessageBox.Show("NumeroDocumento: " + NumeroDocumento +
@@ -104,7 +114,7 @@ namespace Mesa_de_Partes_1
             string fechaRegistro = DateTime.Now.ToString("dd/MM/yyyy HH:mm");
 
             //Asignamos el estado inicial
-            string estado = "Pendiente";
+            string estado = "PENDIENTE";
 
             //Registramos los datos en la tabla
             dgvPersonas.Rows.Add(
@@ -115,7 +125,9 @@ namespace Mesa_de_Partes_1
                 Nombres,
                 ApellidoPaterno,
                 ApellidoMaterno,
+                CorreoElectronico,
                 Telefono,
+                TipoExpediente,
                 Asunto,
                 estado
             );
@@ -134,7 +146,9 @@ namespace Mesa_de_Partes_1
             txtNombres.Clear();
             txtApellidoPaterno.Clear();
             txtApellidoMaterno.Clear();
+            txtCorreo.Clear();
             txtTelefono.Clear();
+            CBTipoExpediente.SelectedIndex = -1;
             txtAsunto.Clear();
             txtNumeroDocumento.Focus();
             CBTipoDocumento.SelectedIndex = -1;
@@ -162,7 +176,9 @@ namespace Mesa_de_Partes_1
             txtNombres.Clear();
             txtApellidoPaterno.Clear();
             txtApellidoMaterno.Clear();
+            txtCorreo.Clear();
             txtTelefono.Clear();
+            CBTipoExpediente.SelectedIndex = -1;
             txtAsunto.Clear();
             txtNumeroDocumento.Focus();
             CBTipoDocumento.SelectedIndex = -1;
@@ -222,6 +238,11 @@ namespace Mesa_de_Partes_1
         }
 
         private void txtNumeroDocumento_KeyPress(object sender, KeyPressEventArgs e)
+        {
+
+        }
+
+        private void groupBox1_Enter(object sender, EventArgs e)
         {
 
         }
