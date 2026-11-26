@@ -19,10 +19,10 @@ namespace Mesa_de_Partes_1
 
             dgvPersonas.Columns.Clear();
 
-            dgvPersonas.Columns.Add("colExpediente", "N° Expediente");
+            dgvPersonas.Columns.Add("colExpediente", "N° de Expediente");
             dgvPersonas.Columns.Add("colFecha", "Fecha de registro");
-            dgvPersonas.Columns.Add("colTipoDocumento", "Tipo documento");
-            dgvPersonas.Columns.Add("colNumeroDocumento", "N° Documento");
+            dgvPersonas.Columns.Add("colTipoDocumento", "Tipo de documento");
+            dgvPersonas.Columns.Add("colNumeroDocumento", "N° de Documento");
             dgvPersonas.Columns.Add("colNombres", "Nombres");
             dgvPersonas.Columns.Add("colApellidoPaterno", "Apellido paterno");
             dgvPersonas.Columns.Add("colApellidoMaterno", "Apellido materno");
