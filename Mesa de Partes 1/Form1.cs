@@ -34,6 +34,7 @@ namespace Mesa_de_Partes_1
 
         }
 
+        //Botón registrar
         private void button1_Click(object sender, EventArgs e)
         {
 
@@ -51,49 +52,25 @@ namespace Mesa_de_Partes_1
 
             //Variables donde almacenamos los datos ingresados por el usuario
             string TipoDocumento = CBTipoDocumento.SelectedItem.ToString(); //Tipo de documento seleccionado
-            string NumeroDocumento = txtNumeroDocumento.Text.Trim().ToUpper();
-            string Nombres = txtNombres.Text.Trim().ToUpper();
-            string ApellidoPaterno = txtApellidoPaterno.Text.Trim().ToUpper();
-            string ApellidoMaterno = txtApellidoMaterno.Text.Trim().ToUpper();
-            string CorreoElectronico = txtCorreo.Text.Trim().ToUpper();
-            string Telefono = txtTelefono.Text.Trim().ToUpper();
+            string NumeroDocumento = Validaciones.LimpiarTexto(txtNumeroDocumento.Text);
+            string Nombres = Validaciones.LimpiarTexto(txtNombres.Text);
+            string ApellidoPaterno = Validaciones.LimpiarTexto(txtApellidoPaterno.Text);
+            string ApellidoMaterno = Validaciones.LimpiarTexto(txtApellidoMaterno.Text);
+            string CorreoElectronico = Validaciones.LimpiarTexto(txtCorreo.Text);
+            string Telefono = Validaciones.LimpiarTexto(txtTelefono.Text);
             string TipoExpediente = CBTipoExpediente.SelectedItem.ToString(); //Tipo de expediente seleccionado
-            string Asunto = txtAsunto.Text.Trim().ToUpper();
+            string Asunto = Validaciones.LimpiarTexto(txtAsunto.Text);
 
-
-            // Validación de campos del tipo de documento
-            if (TipoDocumento == "DNI")
+            // Validamos los datos
+            string error = Validaciones.ValidarRegistro(TipoDocumento, NumeroDocumento, Nombres,
+                                                        ApellidoPaterno, ApellidoMaterno);
+            if (error != "")
             {
-                if (NumeroDocumento.Length != 8)
-                {
-                    MessageBox.Show("El DNI debe tener 8 dígitos.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-            }
-
-            if (TipoDocumento == "RUC")
-            {
-                if (NumeroDocumento.Length != 11)
-                {
-                    MessageBox.Show("El RUC debe tener 11 dígitos.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-            }
-
-            if (TipoDocumento == "CE")
-            {
-                if (NumeroDocumento.Length != 11)
-                {
-                    MessageBox.Show("La Cédula de Extranjería debe tener 11 dígitos.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-            }
-
-            if (Nombres == "" || ApellidoPaterno == "" || ApellidoMaterno == "")
-            {
-                MessageBox.Show("Ingrese nombres y apellidos.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(error, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
+
+
 
             //Colocamos los datos en la tabla
             //Generamos el código del expediente
