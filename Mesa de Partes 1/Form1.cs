@@ -52,6 +52,7 @@ namespace Mesa_de_Partes_1
             string TipoDocumento = CBTipoDocumento.SelectedItem.ToString(); //Tipo de documento seleccionado
 
             //Variables donde almacenamos los datos ingresados por el usuario
+            string TipoDocumento = CBTipoDocumento.SelectedItem.ToString(); //Tipo de documento seleccionado
             string NumeroDocumento = txtNumeroDocumento.Text.Trim().ToUpper();
             string Nombres = txtNombres.Text.Trim().ToUpper();
             string ApellidoPaterno = txtApellidoPaterno.Text.Trim().ToUpper();
@@ -61,14 +62,6 @@ namespace Mesa_de_Partes_1
             string TipoExpediente = CBTipoExpediente.SelectedItem.ToString(); //Tipo de expediente seleccionado
             string Asunto = txtAsunto.Text.Trim().ToUpper();
             
-
-
-            //MessageBox.Show("NumeroDocumento: " + NumeroDocumento +
-                //"\nNombres: " + Nombres +
-                //"\nApellidos: " + Apellidos +
-                //"\nTeléfono: " + Telefono +
-                //"\nAsunto: " + Asunto);
-
 
             // Validación de campos del tipo de documento
             if (TipoDocumento == "DNI")
@@ -142,16 +135,20 @@ namespace Mesa_de_Partes_1
                 MessageBoxIcon.Information
             );
 
-            txtNumeroDocumento.Clear();
-            txtNombres.Clear();
-            txtApellidoPaterno.Clear();
-            txtApellidoMaterno.Clear();
-            txtCorreo.Clear();
-            txtTelefono.Clear();
-            CBTipoExpediente.SelectedIndex = -1;
-            txtAsunto.Clear();
-            txtNumeroDocumento.Focus();
-            CBTipoDocumento.SelectedIndex = -1;
+            private void limpiarCampos()
+            {
+
+                txtNumeroDocumento.Clear();
+                txtNombres.Clear();
+                txtApellidoPaterno.Clear();
+                txtApellidoMaterno.Clear();
+                txtCorreo.Clear();
+                txtTelefono.Clear();
+                CBTipoExpediente.SelectedIndex = -1;
+                txtAsunto.Clear();
+                txtNumeroDocumento.Focus();
+                CBTipoDocumento.SelectedIndex = -1;
+            }
         }
 
         private void txtDni_TextChanged(object sender, EventArgs e)
@@ -172,16 +169,7 @@ namespace Mesa_de_Partes_1
         //Botón limpiar campos
         private void btnLimpiar_Click(object sender, EventArgs e)
         {
-            txtNumeroDocumento.Clear();
-            txtNombres.Clear();
-            txtApellidoPaterno.Clear();
-            txtApellidoMaterno.Clear();
-            txtCorreo.Clear();
-            txtTelefono.Clear();
-            CBTipoExpediente.SelectedIndex = -1;
-            txtAsunto.Clear();
-            txtNumeroDocumento.Focus();
-            CBTipoDocumento.SelectedIndex = -1;
+                limpiarCampos();
         }
 
         //Búsqueda de registros por número de documento
