@@ -49,8 +49,6 @@ namespace Mesa_de_Partes_1
                 return;
             }
 
-            string TipoDocumento = CBTipoDocumento.SelectedItem.ToString(); //Tipo de documento seleccionado
-
             //Variables donde almacenamos los datos ingresados por el usuario
             string TipoDocumento = CBTipoDocumento.SelectedItem.ToString(); //Tipo de documento seleccionado
             string NumeroDocumento = txtNumeroDocumento.Text.Trim().ToUpper();
@@ -61,7 +59,7 @@ namespace Mesa_de_Partes_1
             string Telefono = txtTelefono.Text.Trim().ToUpper();
             string TipoExpediente = CBTipoExpediente.SelectedItem.ToString(); //Tipo de expediente seleccionado
             string Asunto = txtAsunto.Text.Trim().ToUpper();
-            
+
 
             // Validación de campos del tipo de documento
             if (TipoDocumento == "DNI")
@@ -73,9 +71,9 @@ namespace Mesa_de_Partes_1
                 }
             }
 
-            if (TipoDocumento == "RUC") 
+            if (TipoDocumento == "RUC")
             {
-                if (NumeroDocumento.Length != 11) 
+                if (NumeroDocumento.Length != 11)
                 {
                     MessageBox.Show("El RUC debe tener 11 dígitos.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
@@ -135,20 +133,21 @@ namespace Mesa_de_Partes_1
                 MessageBoxIcon.Information
             );
 
-            private void limpiarCampos()
-            {
+            limpiarCampos();
+        }
 
-                txtNumeroDocumento.Clear();
-                txtNombres.Clear();
-                txtApellidoPaterno.Clear();
-                txtApellidoMaterno.Clear();
-                txtCorreo.Clear();
-                txtTelefono.Clear();
-                CBTipoExpediente.SelectedIndex = -1;
-                txtAsunto.Clear();
-                txtNumeroDocumento.Focus();
-                CBTipoDocumento.SelectedIndex = -1;
-            }
+        private void limpiarCampos()
+        {
+            txtNumeroDocumento.Clear();
+            txtNombres.Clear();
+            txtApellidoPaterno.Clear();
+            txtApellidoMaterno.Clear();
+            txtCorreo.Clear();
+            txtTelefono.Clear();
+            CBTipoExpediente.SelectedIndex = -1;
+            txtAsunto.Clear();
+            txtNumeroDocumento.Focus();
+            CBTipoDocumento.SelectedIndex = -1;
         }
 
         private void txtDni_TextChanged(object sender, EventArgs e)
@@ -163,13 +162,13 @@ namespace Mesa_de_Partes_1
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            
+
         }
 
         //Botón limpiar campos
         private void btnLimpiar_Click(object sender, EventArgs e)
         {
-                limpiarCampos();
+            limpiarCampos();
         }
 
         //Búsqueda de registros por número de documento
@@ -183,11 +182,11 @@ namespace Mesa_de_Partes_1
                 MessageBox.Show("Ingrese un número de documento para buscar.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-                bool encontrado = false;
+            bool encontrado = false;
 
-                //Buscamos en todas las filas del DataGridView
-                foreach (DataGridViewRow fila in dgvPersonas.Rows)
-                {
+            //Buscamos en todas las filas del DataGridView
+            foreach (DataGridViewRow fila in dgvPersonas.Rows)
+            {
 
                 if (fila.IsNewRow || fila.Cells[3].Value == null)
                     continue;
@@ -196,23 +195,23 @@ namespace Mesa_de_Partes_1
                     fila.Cells[3].Value.ToString();
 
                 if (documentoEnTabla == DocumentoBuscado)
-                    {
-                        //Se selecciona la fila en la tabla si se encuentra registrada
-                        fila.Selected = true;
-                        dgvPersonas.CurrentCell = fila.Cells[3]; //Salta visualmente a la fila
+                {
+                    //Se selecciona la fila en la tabla si se encuentra registrada
+                    fila.Selected = true;
+                    dgvPersonas.CurrentCell = fila.Cells[3]; //Salta visualmente a la fila
 
                     MessageBox.Show("¡Registro encontrado!", "Búsqueda", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        encontrado = true;
-                        break;
-                    }
+                    encontrado = true;
+                    break;
                 }
+            }
 
             //No se encontró ningún registro con ese número de documento
             if (!encontrado)
-                {
-                    MessageBox.Show("No se encontró ningún registro con ese número de documento.", "Sin resultados", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-            
+            {
+                MessageBox.Show("No se encontró ningún registro con ese número de documento.", "Sin resultados", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+
         }
 
         private void label1_Click(object sender, EventArgs e)
