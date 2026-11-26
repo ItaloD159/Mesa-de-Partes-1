@@ -38,7 +38,7 @@ namespace Mesa_de_Partes_1
         private void button1_Click(object sender, EventArgs e)
         {
 
-            //Valida si se eligió un tipo de documento
+            //Valida si se eligió un tipo de documento y expediente
             if (CBTipoDocumento.SelectedItem == null)
             {
                 MessageBox.Show("Seleccione un tipo de documento.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning); CBTipoDocumento.Focus();
@@ -63,7 +63,7 @@ namespace Mesa_de_Partes_1
 
             // Validamos los datos
             string error = Validaciones.ValidarRegistro(TipoDocumento, NumeroDocumento, Nombres,
-                                                        ApellidoPaterno, ApellidoMaterno);
+                                                        ApellidoPaterno, ApellidoMaterno, Telefono);
             if (error != "")
             {
                 MessageBox.Show(error, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -151,7 +151,7 @@ namespace Mesa_de_Partes_1
         //Búsqueda de registros por número de documento
         private void btnBuscar_Click(object sender, EventArgs e)
         {
-            string DocumentoBuscado = txtBuscarDocumento.Text.Trim().ToUpper();
+            string DocumentoBuscado = Validaciones.LimpiarTexto(txtBuscarDocumento.Text);
 
             //Validamos si el campo está vacío antes de realizar la búsqueda
             if (DocumentoBuscado == "")
