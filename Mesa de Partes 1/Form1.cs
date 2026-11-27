@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,16 +14,21 @@ namespace Mesa_de_Partes_1
     public partial class Form1 : Form
     {
         private int correlativo = 1;
+
+        //Ruta del archivo donde se guardan los expedientes (Documentos\MesaDePartes\expedientes.txt)
+        private string rutaArchivo = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+            "MesaDePartes", "expedientes.txt");
         public Form1()
         {
             InitializeComponent();
 
             dgvPersonas.Columns.Clear();
 
-            dgvPersonas.Columns.Add("colExpediente", "N° de Expediente");
+            dgvPersonas.Columns.Add("colExpediente", "N° Expediente");
             dgvPersonas.Columns.Add("colFecha", "Fecha de registro");
-            dgvPersonas.Columns.Add("colTipoDocumento", "Tipo de documento");
-            dgvPersonas.Columns.Add("colNumeroDocumento", "N° de Documento");
+            dgvPersonas.Columns.Add("colTipoDocumento", "Tipo documento");
+            dgvPersonas.Columns.Add("colNumeroDocumento", "N° Documento");
             dgvPersonas.Columns.Add("colNombres", "Nombres");
             dgvPersonas.Columns.Add("colApellidoPaterno", "Apellido paterno");
             dgvPersonas.Columns.Add("colApellidoMaterno", "Apellido materno");
@@ -31,6 +37,10 @@ namespace Mesa_de_Partes_1
             dgvPersonas.Columns.Add("colTipoExpediente", "Tipo de expediente");
             dgvPersonas.Columns.Add("colAsunto", "Asunto");
             dgvPersonas.Columns.Add("colEstado", "Estado");
+
+            //Al abrir el programa se cargan los expedientes guardados
+            CargarArchivo();
+            CalcularCorrelativo();
 
         }
 
@@ -103,6 +113,9 @@ namespace Mesa_de_Partes_1
             // Aumentamos el correlativo para el siguiente expediente
             correlativo++;
 
+            //Guardamos todos los expedientes en el archivo
+            GuardarArchivo();
+
             MessageBox.Show(
                 "Expediente registrado correctamente: " + codigoExpediente,
                 "Registro exitoso",
@@ -125,6 +138,75 @@ namespace Mesa_de_Partes_1
             txtAsunto.Clear();
             txtNumeroDocumento.Focus();
             CBTipoDocumento.SelectedIndex = -1;
+        }
+
+        //Guarda todas las filas de la tabla en el archivo (una línea por expediente)
+        private void GuardarArchivo()
+        {
+            try
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(rutaArchivo));
+
+                using (StreamWriter sw = new StreamWriter(rutaArchivo)) //abre y sobrescribe
+                {
+                    foreach (DataGridViewRow fila in dgvPersonas.Rows)
+                    {
+                        if (fila.IsNewRow) continue;
+
+                        string[] celdas = new string[fila.Cells.Count];
+                        for (int i = 0; i < fila.Cells.Count; i++)
+                            celdas[i] = Convert.ToString(fila.Cells[i].Value);
+
+                        sw.WriteLine(string.Join("|", celdas)); //escribe una línea
+                    }
+                } //using cierra el archivo
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("No se pudo guardar el archivo: " + ex.Message, "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        //Lee el archivo y llena la tabla
+        private void CargarArchivo()
+        {
+            if (!File.Exists(rutaArchivo)) return;
+
+            try
+            {
+                using (StreamReader sr = new StreamReader(rutaArchivo)) //abre para leer
+                {
+                    string linea;
+                    while ((linea = sr.ReadLine()) != null) //lee línea por línea
+                    {
+                        string[] datos = linea.Split('|');
+                        if (datos.Length == dgvPersonas.Columns.Count) //ignora líneas dañadas
+                            dgvPersonas.Rows.Add(datos);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("No se pudo leer el archivo: " + ex.Message, "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        //Para que el código del siguiente expediente continúe donde quedó
+        private void CalcularCorrelativo()
+        {
+            correlativo = 1;
+            string prefijo = "EXP-" + DateTime.Now.Year + "-";
+            foreach (DataGridViewRow fila in dgvPersonas.Rows)
+            {
+                if (fila.IsNewRow) continue;
+
+                string codigo = Convert.ToString(fila.Cells[0].Value);
+                int numero;
+                if (codigo.StartsWith(prefijo) &&
+                    int.TryParse(codigo.Substring(prefijo.Length), out numero) &&
+                    numero >= correlativo)
+                    correlativo = numero + 1;
+            }
         }
 
         private void txtDni_TextChanged(object sender, EventArgs e)
