@@ -15,10 +15,6 @@ namespace Mesa_de_Partes_1
     {
         private int correlativo = 1;
 
-        //Ruta del archivo donde se guardan los expedientes (Documentos\MesaDePartes\expedientes.txt)
-        private string rutaArchivo = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-            "MesaDePartes", "expedientes.txt");
         public Form1()
         {
             InitializeComponent();
@@ -38,7 +34,7 @@ namespace Mesa_de_Partes_1
             dgvPersonas.Columns.Add("colAsunto", "Asunto");
             dgvPersonas.Columns.Add("colEstado", "Estado");
 
-            //Al abrir el programa se cargan los expedientes guardados
+            //Cuando se abre el programa se cargan los expedientes guardados
             CargarArchivo();
             CalcularCorrelativo();
 
@@ -110,7 +106,7 @@ namespace Mesa_de_Partes_1
                 estado
             );
 
-            // Aumentamos el correlativo para el siguiente expediente
+            //Aumentamos el correlativo para el siguiente expediente
             correlativo++;
 
             //Guardamos todos los expedientes en el archivo
@@ -140,26 +136,25 @@ namespace Mesa_de_Partes_1
             CBTipoDocumento.SelectedIndex = -1;
         }
 
-        //Guarda todas las filas de la tabla en el archivo (una línea por expediente)
+        //Guarda todas las filas de la tabla en el archivo. Esto se realiza en la clase RepositorioExpedientes
         private void GuardarArchivo()
         {
             try
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(rutaArchivo));
-
-                using (StreamWriter sw = new StreamWriter(rutaArchivo)) //abre y sobrescribe
+                //Convertimos cada fila de la tabla en un arreglo de textos
+                List<string[]> filas = new List<string[]>();
+                foreach (DataGridViewRow fila in dgvPersonas.Rows)
                 {
-                    foreach (DataGridViewRow fila in dgvPersonas.Rows)
-                    {
-                        if (fila.IsNewRow) continue;
+                    if (fila.IsNewRow) continue;
 
-                        string[] celdas = new string[fila.Cells.Count];
-                        for (int i = 0; i < fila.Cells.Count; i++)
-                            celdas[i] = Convert.ToString(fila.Cells[i].Value);
+                    string[] celdas = new string[fila.Cells.Count];
+                    for (int i = 0; i < fila.Cells.Count; i++)
+                        celdas[i] = Convert.ToString(fila.Cells[i].Value);
 
-                        sw.WriteLine(string.Join("|", celdas)); //escribe una línea
-                    }
-                } //using cierra el archivo
+                    filas.Add(celdas);
+                }
+
+                RepositorioExpedientes.Guardar(filas);
             }
             catch (Exception ex)
             {
@@ -167,23 +162,13 @@ namespace Mesa_de_Partes_1
             }
         }
 
-        //Lee el archivo y llena la tabla
+        //Lee el archivo con la clase RepositorioExpedientes y llena la tabla
         private void CargarArchivo()
         {
-            if (!File.Exists(rutaArchivo)) return;
-
             try
             {
-                using (StreamReader sr = new StreamReader(rutaArchivo)) //abre para leer
-                {
-                    string linea;
-                    while ((linea = sr.ReadLine()) != null) //lee línea por línea
-                    {
-                        string[] datos = linea.Split('|');
-                        if (datos.Length == dgvPersonas.Columns.Count) //ignora líneas dañadas
-                            dgvPersonas.Rows.Add(datos);
-                    }
-                }
+                foreach (string[] datos in RepositorioExpedientes.Cargar(dgvPersonas.Columns.Count))
+                    dgvPersonas.Rows.Add(datos);
             }
             catch (Exception ex)
             {

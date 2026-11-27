@@ -57,11 +57,11 @@
             this.panel3 = new System.Windows.Forms.Panel();
             this.label4 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.btnExportarRegistro = new System.Windows.Forms.Button();
             this.panel4 = new System.Windows.Forms.Panel();
             this.label7 = new System.Windows.Forms.Label();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.panel5 = new System.Windows.Forms.Panel();
-            this.btnExportarRegistro = new System.Windows.Forms.Button();
             this.panel6 = new System.Windows.Forms.Panel();
             this.label9 = new System.Windows.Forms.Label();
             this.panel7 = new System.Windows.Forms.Panel();
@@ -70,8 +70,8 @@
             this.panel1.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel5.SuspendLayout();
             this.panel6.SuspendLayout();
             this.panel7.SuspendLayout();
@@ -257,9 +257,9 @@
             this.label2.Location = new System.Drawing.Point(22, 62);
             this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(246, 21);
+            this.label2.Size = new System.Drawing.Size(250, 21);
             this.label2.TabIndex = 16;
-            this.label2.Text = "Buscar por número de expediente:";
+            this.label2.Text = "Buscar por número de documento:";
             // 
             // btnBuscar
             // 
@@ -421,15 +421,21 @@
             this.panel2.Size = new System.Drawing.Size(880, 360);
             this.panel2.TabIndex = 4;
             // 
-            // pictureBox1
+            // btnExportarRegistro
             // 
-            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(12, 0);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(100, 125);
-            this.pictureBox1.TabIndex = 26;
-            this.pictureBox1.TabStop = false;
-            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
+            this.btnExportarRegistro.BackColor = System.Drawing.Color.DodgerBlue;
+            this.btnExportarRegistro.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+            this.btnExportarRegistro.FlatAppearance.BorderSize = 2;
+            this.btnExportarRegistro.FlatAppearance.CheckedBackColor = System.Drawing.Color.Black;
+            this.btnExportarRegistro.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnExportarRegistro.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.btnExportarRegistro.Location = new System.Drawing.Point(388, 284);
+            this.btnExportarRegistro.Margin = new System.Windows.Forms.Padding(2);
+            this.btnExportarRegistro.Name = "btnExportarRegistro";
+            this.btnExportarRegistro.Size = new System.Drawing.Size(162, 63);
+            this.btnExportarRegistro.TabIndex = 27;
+            this.btnExportarRegistro.Text = "EXPORTAR REGISTRO";
+            this.btnExportarRegistro.UseVisualStyleBackColor = false;
             // 
             // panel4
             // 
@@ -452,6 +458,16 @@
             this.label7.TabIndex = 24;
             this.label7.Text = "2. DETALLES DEL TRÁMITE";
             // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+            this.pictureBox1.Location = new System.Drawing.Point(12, 0);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(100, 125);
+            this.pictureBox1.TabIndex = 26;
+            this.pictureBox1.TabStop = false;
+            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
+            // 
             // panel5
             // 
             this.panel5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -462,22 +478,6 @@
             this.panel5.Name = "panel5";
             this.panel5.Size = new System.Drawing.Size(1778, 110);
             this.panel5.TabIndex = 26;
-            // 
-            // btnExportarRegistro
-            // 
-            this.btnExportarRegistro.BackColor = System.Drawing.Color.DodgerBlue;
-            this.btnExportarRegistro.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-            this.btnExportarRegistro.FlatAppearance.BorderSize = 2;
-            this.btnExportarRegistro.FlatAppearance.CheckedBackColor = System.Drawing.Color.Black;
-            this.btnExportarRegistro.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnExportarRegistro.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.btnExportarRegistro.Location = new System.Drawing.Point(388, 284);
-            this.btnExportarRegistro.Margin = new System.Windows.Forms.Padding(2);
-            this.btnExportarRegistro.Name = "btnExportarRegistro";
-            this.btnExportarRegistro.Size = new System.Drawing.Size(162, 63);
-            this.btnExportarRegistro.TabIndex = 27;
-            this.btnExportarRegistro.Text = "EXPORTAR REGISTRO";
-            this.btnExportarRegistro.UseVisualStyleBackColor = false;
             // 
             // panel6
             // 
@@ -545,9 +545,9 @@
             this.panel3.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.panel5.ResumeLayout(false);
             this.panel5.PerformLayout();
             this.panel6.ResumeLayout(false);
