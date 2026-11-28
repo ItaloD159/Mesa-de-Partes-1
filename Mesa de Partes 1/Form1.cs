@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -38,98 +39,12 @@ namespace Mesa_de_Partes_1
             dgvPersonas.Columns.Add("colAsunto", "Asunto");
             dgvPersonas.Columns.Add("colEstado", "Estado");
 
-            CargarArchivo();
-
         }
 
-
-        private void GuardarArchivo()
-        {
-            try
-            {
-                // Crear la carpeta si no existe
-                Directory.CreateDirectory(
-                    Path.GetDirectoryName(rutaArchivo)
-                );
-
-                StringBuilder contenido = new StringBuilder();
-
-                foreach (DataGridViewRow fila in dgvPersonas.Rows)
-                {
-                    if (fila.IsNewRow)
-                        continue;
-
-                    string[] datos = new string[fila.Cells.Count];
-
-                    for (int i = 0; i < fila.Cells.Count; i++)
-                    {
-                        datos[i] = fila.Cells[i].Value?.ToString() ?? "";
-                    }
-
-                    contenido.AppendLine(string.Join("|", datos));
-                }
-
-                File.WriteAllText(rutaArchivo, contenido.ToString());
-
-                MessageBox.Show(
-                    "Archivo guardado correctamente en:\n" + rutaArchivo,
-                    "Guardado exitoso",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information
-                );
-            }   
-            catch (Exception ex)
-            {
-                MessageBox.Show(
-                    "Error al guardar: " + ex.Message,
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
-            }
-        }
-
-
-        private void CargarArchivo()
-        {
-            // Verificamos si existe el archivo
-            if (!File.Exists(rutaArchivo))
-                return;
-
-            // Leemos todas las líneas del archivo
-            string[] lineas = File.ReadAllLines(rutaArchivo);
-
-            foreach (string linea in lineas)
-            {
-                string[] datos = linea.Split('|');
-
-                // Verificamos que tenga las 12 columnas
-                if (datos.Length != 12)
-                    continue;
-
-                // Recuperamos el expediente en la tabla
-                dgvPersonas.Rows.Add(datos);
-
-                // Recuperamos el correlativo
-                string[] partesCodigo = datos[0].Split('-');
-
-                if (partesCodigo.Length == 3 &&
-                    partesCodigo[1] == DateTime.Now.Year.ToString())
-                {
-                    int numero;
-
-                    if (int.TryParse(partesCodigo[2], out numero))
-                    {
-                        if (numero >= correlativo)
-                            correlativo = numero + 1;
-                    }
-                }
-            }
-        }
         private void button1_Click(object sender, EventArgs e)
         {
 
-            //Valida si se eligió un tipo de documento
+            //Valida si se eligió un tipo de documento y expediente
             if (CBTipoDocumento.SelectedItem == null)
             {
                 MessageBox.Show("Seleccione un tipo de documento.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning); CBTipoDocumento.Focus();
@@ -141,60 +56,27 @@ namespace Mesa_de_Partes_1
                 return;
             }
 
-            string TipoDocumento = CBTipoDocumento.SelectedItem.ToString(); //Tipo de documento seleccionado
-
             //Variables donde almacenamos los datos ingresados por el usuario
-            string NumeroDocumento = txtNumeroDocumento.Text.Trim().ToUpper();
-            string Nombres = txtNombres.Text.Trim().ToUpper();
-            string ApellidoPaterno = txtApellidoPaterno.Text.Trim().ToUpper();
-            string ApellidoMaterno = txtApellidoMaterno.Text.Trim().ToUpper();
-            string CorreoElectronico = txtCorreo.Text.Trim().ToUpper();
-            string Telefono = txtTelefono.Text.Trim().ToUpper();
+            string TipoDocumento = CBTipoDocumento.SelectedItem.ToString(); //Tipo de documento seleccionado
+            string NumeroDocumento = Validaciones.LimpiarTexto(txtNumeroDocumento.Text);
+            string Nombres = Validaciones.LimpiarTexto(txtNombres.Text);
+            string ApellidoPaterno = Validaciones.LimpiarTexto(txtApellidoPaterno.Text);
+            string ApellidoMaterno = Validaciones.LimpiarTexto(txtApellidoMaterno.Text);
+            string CorreoElectronico = Validaciones.LimpiarTexto(txtCorreo.Text);
+            string Telefono = Validaciones.LimpiarTexto(txtTelefono.Text);
             string TipoExpediente = CBTipoExpediente.SelectedItem.ToString(); //Tipo de expediente seleccionado
-            string Asunto = txtAsunto.Text.Trim().ToUpper();
-            
+            string Asunto = Validaciones.LimpiarTexto(txtAsunto.Text);
 
-
-            //MessageBox.Show("NumeroDocumento: " + NumeroDocumento +
-                //"\nNombres: " + Nombres +
-                //"\nApellidos: " + Apellidos +
-                //"\nTeléfono: " + Telefono +
-                //"\nAsunto: " + Asunto);
-
-
-            // Validación de campos del tipo de documento
-            if (TipoDocumento == "DNI")
+            // Validamos los datos
+            string error = Validaciones.ValidarRegistro(TipoDocumento, NumeroDocumento, Nombres,
+                                                        ApellidoPaterno, ApellidoMaterno, Telefono);
+            if (error != "")
             {
-                if (NumeroDocumento.Length != 8)
-                {
-                    MessageBox.Show("El DNI debe tener 8 dígitos.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-            }
-
-            if (TipoDocumento == "RUC") 
-            {
-                if (NumeroDocumento.Length != 11) 
-                {
-                    MessageBox.Show("El RUC debe tener 11 dígitos.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-            }
-
-            if (TipoDocumento == "CE")
-            {
-                if (NumeroDocumento.Length != 11)
-                {
-                    MessageBox.Show("La Cédula de Extranjería debe tener 11 dígitos.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-            }
-
-            if (Nombres == "" || ApellidoPaterno == "" || ApellidoMaterno == "")
-            {
-                MessageBox.Show("Ingrese nombres y apellidos.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(error, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
+
+
 
             //Colocamos los datos en la tabla
             //Generamos el código del expediente
@@ -224,11 +106,8 @@ namespace Mesa_de_Partes_1
                 estado
             );
 
-            // Aumentamos el correlativo para el siguiente expediente
+            //Aumentamos el correlativo para el siguiente expediente
             correlativo++;
-
-            // Guardamos todos los expedientes en el archivo TXT
-            GuardarArchivo();
 
             MessageBox.Show(
                 "Expediente registrado correctamente: " + codigoExpediente,
@@ -237,6 +116,11 @@ namespace Mesa_de_Partes_1
                 MessageBoxIcon.Information
             );
 
+            limpiarCampos();
+        }
+
+        private void limpiarCampos()
+        {
             txtNumeroDocumento.Clear();
             txtNombres.Clear();
             txtApellidoPaterno.Clear();
@@ -247,6 +131,64 @@ namespace Mesa_de_Partes_1
             txtAsunto.Clear();
             txtNumeroDocumento.Focus();
             CBTipoDocumento.SelectedIndex = -1;
+        }
+
+        //Guarda todas las filas de la tabla en el archivo. Esto se realiza en la clase RepositorioExpedientes
+        private void GuardarArchivo()
+        {
+            try
+            {
+                //Convertimos cada fila de la tabla en un arreglo de textos
+                List<string[]> filas = new List<string[]>();
+                foreach (DataGridViewRow fila in dgvPersonas.Rows)
+                {
+                    if (fila.IsNewRow) continue;
+
+                    string[] celdas = new string[fila.Cells.Count];
+                    for (int i = 0; i < fila.Cells.Count; i++)
+                        celdas[i] = Convert.ToString(fila.Cells[i].Value);
+
+                    filas.Add(celdas);
+                }
+
+                RepositorioExpedientes.Guardar(filas);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("No se pudo guardar el archivo: " + ex.Message, "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        //Lee el archivo con la clase RepositorioExpedientes y llena la tabla
+        private void CargarArchivo()
+        {
+            try
+            {
+                foreach (string[] datos in RepositorioExpedientes.Cargar(dgvPersonas.Columns.Count))
+                    dgvPersonas.Rows.Add(datos);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("No se pudo leer el archivo: " + ex.Message, "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        //Para que el código del siguiente expediente continúe donde quedó
+        private void CalcularCorrelativo()
+        {
+            correlativo = 1;
+            string prefijo = "EXP-" + DateTime.Now.Year + "-";
+            foreach (DataGridViewRow fila in dgvPersonas.Rows)
+            {
+                if (fila.IsNewRow) continue;
+
+                string codigo = Convert.ToString(fila.Cells[0].Value);
+                int numero;
+                if (codigo.StartsWith(prefijo) &&
+                    int.TryParse(codigo.Substring(prefijo.Length), out numero) &&
+                    numero >= correlativo)
+                    correlativo = numero + 1;
+            }
         }
 
         private void txtDni_TextChanged(object sender, EventArgs e)
@@ -261,28 +203,19 @@ namespace Mesa_de_Partes_1
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            
+
         }
 
         //Botón limpiar campos
         private void btnLimpiar_Click(object sender, EventArgs e)
         {
-            txtNumeroDocumento.Clear();
-            txtNombres.Clear();
-            txtApellidoPaterno.Clear();
-            txtApellidoMaterno.Clear();
-            txtCorreo.Clear();
-            txtTelefono.Clear();
-            CBTipoExpediente.SelectedIndex = -1;
-            txtAsunto.Clear();
-            txtNumeroDocumento.Focus();
-            CBTipoDocumento.SelectedIndex = -1;
+            limpiarCampos();
         }
 
         //Búsqueda de registros por número de documento
         private void btnBuscar_Click(object sender, EventArgs e)
         {
-            string DocumentoBuscado = txtBuscarDocumento.Text.Trim().ToUpper();
+            string DocumentoBuscado = Validaciones.LimpiarTexto(txtBuscarDocumento.Text);
 
             //Validamos si el campo está vacío antes de realizar la búsqueda
             if (DocumentoBuscado == "")
@@ -290,11 +223,11 @@ namespace Mesa_de_Partes_1
                 MessageBox.Show("Ingrese un número de documento para buscar.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-                bool encontrado = false;
+            bool encontrado = false;
 
-                //Buscamos en todas las filas del DataGridView
-                foreach (DataGridViewRow fila in dgvPersonas.Rows)
-                {
+            //Buscamos en todas las filas del DataGridView
+            foreach (DataGridViewRow fila in dgvPersonas.Rows)
+            {
 
                 if (fila.IsNewRow || fila.Cells[3].Value == null)
                     continue;
@@ -303,23 +236,23 @@ namespace Mesa_de_Partes_1
                     fila.Cells[3].Value.ToString();
 
                 if (documentoEnTabla == DocumentoBuscado)
-                    {
-                        //Se selecciona la fila en la tabla si se encuentra registrada
-                        fila.Selected = true;
-                        dgvPersonas.CurrentCell = fila.Cells[3]; //Salta visualmente a la fila
+                {
+                    //Se selecciona la fila en la tabla si se encuentra registrada
+                    fila.Selected = true;
+                    dgvPersonas.CurrentCell = fila.Cells[3]; //Salta visualmente a la fila
 
                     MessageBox.Show("¡Registro encontrado!", "Búsqueda", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        encontrado = true;
-                        break;
-                    }
+                    encontrado = true;
+                    break;
                 }
+            }
 
             //No se encontró ningún registro con ese número de documento
             if (!encontrado)
-                {
-                    MessageBox.Show("No se encontró ningún registro con ese número de documento.", "Sin resultados", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-            
+            {
+                MessageBox.Show("No se encontró ningún registro con ese número de documento.", "Sin resultados", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+
         }
 
         private void label1_Click(object sender, EventArgs e)
