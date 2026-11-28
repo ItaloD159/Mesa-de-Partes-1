@@ -1,25 +1,14 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.IO;
 
 namespace Mesa_de_Partes_1
 {
     public partial class Form1 : Form
     {
         private int correlativo = 1;
-        private string rutaArchivo = Path.Combine(
-         Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-         "MesaDePartes",
-         "Expedientes.txt"
-);
+
         public Form1()
         {
             InitializeComponent();
@@ -39,58 +28,77 @@ namespace Mesa_de_Partes_1
             dgvPersonas.Columns.Add("colAsunto", "Asunto");
             dgvPersonas.Columns.Add("colEstado", "Estado");
 
+            // Cargar los registros guardados
+            CargarArchivo();
+
+            // Continuar con el siguiente correlativo
+            CalcularCorrelativo();
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-
-            //Valida si se eligió un tipo de documento y expediente
+            // Validar tipo de documento
             if (CBTipoDocumento.SelectedItem == null)
             {
-                MessageBox.Show("Seleccione un tipo de documento.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning); CBTipoDocumento.Focus();
-                return;
-            }
-            if (CBTipoExpediente.SelectedItem == null)
-            {
-                MessageBox.Show("Seleccione un tipo de expediente.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning); CBTipoExpediente.Focus();
+                MessageBox.Show("Seleccione un tipo de documento.",
+                    "Advertencia", MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+
+                CBTipoDocumento.Focus();
                 return;
             }
 
-            //Variables donde almacenamos los datos ingresados por el usuario
-            string TipoDocumento = CBTipoDocumento.SelectedItem.ToString(); //Tipo de documento seleccionado
+            // Validar tipo de expediente
+            if (CBTipoExpediente.SelectedItem == null)
+            {
+                MessageBox.Show("Seleccione un tipo de expediente.",
+                    "Advertencia", MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+
+                CBTipoExpediente.Focus();
+                return;
+            }
+
+            // Obtener los datos ingresados
+            string TipoDocumento = CBTipoDocumento.SelectedItem.ToString();
             string NumeroDocumento = Validaciones.LimpiarTexto(txtNumeroDocumento.Text);
             string Nombres = Validaciones.LimpiarTexto(txtNombres.Text);
             string ApellidoPaterno = Validaciones.LimpiarTexto(txtApellidoPaterno.Text);
             string ApellidoMaterno = Validaciones.LimpiarTexto(txtApellidoMaterno.Text);
             string CorreoElectronico = Validaciones.LimpiarTexto(txtCorreo.Text);
             string Telefono = Validaciones.LimpiarTexto(txtTelefono.Text);
-            string TipoExpediente = CBTipoExpediente.SelectedItem.ToString(); //Tipo de expediente seleccionado
+            string TipoExpediente = CBTipoExpediente.SelectedItem.ToString();
             string Asunto = Validaciones.LimpiarTexto(txtAsunto.Text);
 
-            // Validamos los datos
-            string error = Validaciones.ValidarRegistro(TipoDocumento, NumeroDocumento, Nombres,
-                                                        ApellidoPaterno, ApellidoMaterno, Telefono);
+            // Validar los datos
+            string error = Validaciones.ValidarRegistro(
+                TipoDocumento,
+                NumeroDocumento,
+                Nombres,
+                ApellidoPaterno,
+                ApellidoMaterno,
+                Telefono
+            );
+
             if (error != "")
             {
-                MessageBox.Show(error, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(error, "Advertencia",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-
-
-            //Colocamos los datos en la tabla
-            //Generamos el código del expediente
+            // Generar código del expediente
             string codigoExpediente =
                 "EXP-" + DateTime.Now.Year + "-" +
                 correlativo.ToString("D4");
 
-            //Obtenemos la fecha y hora actuales
+            // Obtener fecha y hora
             string fechaRegistro = DateTime.Now.ToString("dd/MM/yyyy HH:mm");
 
-            //Asignamos el estado inicial
+            // Estado inicial
             string estado = "PENDIENTE";
 
-            //Registramos los datos en la tabla
+            // Agregar registro a la tabla
             dgvPersonas.Rows.Add(
                 codigoExpediente,
                 fechaRegistro,
@@ -106,8 +114,11 @@ namespace Mesa_de_Partes_1
                 estado
             );
 
-            //Aumentamos el correlativo para el siguiente expediente
+            // Incrementar correlativo
             correlativo++;
+
+            // Guardar automáticamente
+            GuardarArchivo();
 
             MessageBox.Show(
                 "Expediente registrado correctamente: " + codigoExpediente,
@@ -119,6 +130,7 @@ namespace Mesa_de_Partes_1
             limpiarCampos();
         }
 
+        // Limpiar campos
         private void limpiarCampos()
         {
             txtNumeroDocumento.Clear();
@@ -127,26 +139,32 @@ namespace Mesa_de_Partes_1
             txtApellidoMaterno.Clear();
             txtCorreo.Clear();
             txtTelefono.Clear();
+
             CBTipoExpediente.SelectedIndex = -1;
+            CBTipoDocumento.SelectedIndex = -1;
+
             txtAsunto.Clear();
             txtNumeroDocumento.Focus();
-            CBTipoDocumento.SelectedIndex = -1;
         }
 
-        //Guarda todas las filas de la tabla en el archivo. Esto se realiza en la clase RepositorioExpedientes
+        // Guardar registros en el archivo
         private void GuardarArchivo()
         {
             try
             {
-                //Convertimos cada fila de la tabla en un arreglo de textos
                 List<string[]> filas = new List<string[]>();
+
                 foreach (DataGridViewRow fila in dgvPersonas.Rows)
                 {
-                    if (fila.IsNewRow) continue;
+                    if (fila.IsNewRow)
+                        continue;
 
                     string[] celdas = new string[fila.Cells.Count];
+
                     for (int i = 0; i < fila.Cells.Count; i++)
+                    {
                         celdas[i] = Convert.ToString(fila.Cells[i].Value);
+                    }
 
                     filas.Add(celdas);
                 }
@@ -155,80 +173,94 @@ namespace Mesa_de_Partes_1
             }
             catch (Exception ex)
             {
-                MessageBox.Show("No se pudo guardar el archivo: " + ex.Message, "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    "No se pudo guardar el archivo: " + ex.Message,
+                    "Aviso",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
             }
         }
 
-        //Lee el archivo con la clase RepositorioExpedientes y llena la tabla
+        // Cargar registros desde el archivo
         private void CargarArchivo()
         {
             try
             {
-                foreach (string[] datos in RepositorioExpedientes.Cargar(dgvPersonas.Columns.Count))
+                foreach (string[] datos in
+                    RepositorioExpedientes.Cargar(dgvPersonas.Columns.Count))
+                {
                     dgvPersonas.Rows.Add(datos);
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("No se pudo leer el archivo: " + ex.Message, "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    "No se pudo leer el archivo: " + ex.Message,
+                    "Aviso",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
             }
         }
 
-        //Para que el código del siguiente expediente continúe donde quedó
+        // Calcular el siguiente número de expediente
         private void CalcularCorrelativo()
         {
             correlativo = 1;
+
             string prefijo = "EXP-" + DateTime.Now.Year + "-";
+
             foreach (DataGridViewRow fila in dgvPersonas.Rows)
             {
-                if (fila.IsNewRow) continue;
+                if (fila.IsNewRow)
+                    continue;
 
                 string codigo = Convert.ToString(fila.Cells[0].Value);
+
                 int numero;
-                if (codigo.StartsWith(prefijo) &&
-                    int.TryParse(codigo.Substring(prefijo.Length), out numero) &&
+
+                if (codigo != null &&
+                    codigo.StartsWith(prefijo) &&
+                    int.TryParse(
+                        codigo.Substring(prefijo.Length),
+                        out numero
+                    ) &&
                     numero >= correlativo)
+                {
                     correlativo = numero + 1;
+                }
             }
         }
 
-        private void txtDni_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void lblDni_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        //Botón limpiar campos
+        // Botón limpiar
         private void btnLimpiar_Click(object sender, EventArgs e)
         {
             limpiarCampos();
         }
 
-        //Búsqueda de registros por número de documento
+        // Buscar por número de documento
         private void btnBuscar_Click(object sender, EventArgs e)
         {
-            string DocumentoBuscado = Validaciones.LimpiarTexto(txtBuscarDocumento.Text);
+            string DocumentoBuscado =
+                Validaciones.LimpiarTexto(txtBuscarDocumento.Text);
 
-            //Validamos si el campo está vacío antes de realizar la búsqueda
             if (DocumentoBuscado == "")
             {
-                MessageBox.Show("Ingrese un número de documento para buscar.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    "Ingrese un número de documento para buscar.",
+                    "Advertencia",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
                 return;
             }
+
             bool encontrado = false;
 
-            //Buscamos en todas las filas del DataGridView
             foreach (DataGridViewRow fila in dgvPersonas.Rows)
             {
-
                 if (fila.IsNewRow || fila.Cells[3].Value == null)
                     continue;
 
@@ -237,47 +269,63 @@ namespace Mesa_de_Partes_1
 
                 if (documentoEnTabla == DocumentoBuscado)
                 {
-                    //Se selecciona la fila en la tabla si se encuentra registrada
                     fila.Selected = true;
-                    dgvPersonas.CurrentCell = fila.Cells[3]; //Salta visualmente a la fila
+                    dgvPersonas.CurrentCell = fila.Cells[3];
 
-                    MessageBox.Show("¡Registro encontrado!", "Búsqueda", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(
+                        "¡Registro encontrado!",
+                        "Búsqueda",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
+
                     encontrado = true;
                     break;
                 }
             }
 
-            //No se encontró ningún registro con ese número de documento
             if (!encontrado)
             {
-                MessageBox.Show("No se encontró ningún registro con ese número de documento.", "Sin resultados", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(
+                    "No se encontró ningún registro con ese número de documento.",
+                    "Sin resultados",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
             }
+        }
 
+        // Eventos del formulario
+        private void txtDni_TextChanged(object sender, EventArgs e)
+        {
+        }
+
+        private void lblDni_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
         }
 
         private void label1_Click(object sender, EventArgs e)
         {
-
         }
 
         private void lblTitulo_Click(object sender, EventArgs e)
         {
-
         }
 
         private void txtNumeroDocumento_KeyPress(object sender, KeyPressEventArgs e)
         {
-
         }
 
         private void groupBox1_Enter(object sender, EventArgs e)
         {
-
         }
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {
-
         }
     }
 }
