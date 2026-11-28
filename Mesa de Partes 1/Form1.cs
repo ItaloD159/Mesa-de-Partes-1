@@ -7,12 +7,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 
 namespace Mesa_de_Partes_1
 {
     public partial class Form1 : Form
     {
         private int correlativo = 1;
+        private string rutaArchivo = Path.Combine(
+         Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+         "MesaDePartes",
+         "Expedientes.txt"
+);
         public Form1()
         {
             InitializeComponent();
@@ -32,8 +38,94 @@ namespace Mesa_de_Partes_1
             dgvPersonas.Columns.Add("colAsunto", "Asunto");
             dgvPersonas.Columns.Add("colEstado", "Estado");
 
+            CargarArchivo();
+
         }
 
+
+        private void GuardarArchivo()
+        {
+            try
+            {
+                // Crear la carpeta si no existe
+                Directory.CreateDirectory(
+                    Path.GetDirectoryName(rutaArchivo)
+                );
+
+                StringBuilder contenido = new StringBuilder();
+
+                foreach (DataGridViewRow fila in dgvPersonas.Rows)
+                {
+                    if (fila.IsNewRow)
+                        continue;
+
+                    string[] datos = new string[fila.Cells.Count];
+
+                    for (int i = 0; i < fila.Cells.Count; i++)
+                    {
+                        datos[i] = fila.Cells[i].Value?.ToString() ?? "";
+                    }
+
+                    contenido.AppendLine(string.Join("|", datos));
+                }
+
+                File.WriteAllText(rutaArchivo, contenido.ToString());
+
+                MessageBox.Show(
+                    "Archivo guardado correctamente en:\n" + rutaArchivo,
+                    "Guardado exitoso",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
+            }   
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    "Error al guardar: " + ex.Message,
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+            }
+        }
+
+
+        private void CargarArchivo()
+        {
+            // Verificamos si existe el archivo
+            if (!File.Exists(rutaArchivo))
+                return;
+
+            // Leemos todas las líneas del archivo
+            string[] lineas = File.ReadAllLines(rutaArchivo);
+
+            foreach (string linea in lineas)
+            {
+                string[] datos = linea.Split('|');
+
+                // Verificamos que tenga las 12 columnas
+                if (datos.Length != 12)
+                    continue;
+
+                // Recuperamos el expediente en la tabla
+                dgvPersonas.Rows.Add(datos);
+
+                // Recuperamos el correlativo
+                string[] partesCodigo = datos[0].Split('-');
+
+                if (partesCodigo.Length == 3 &&
+                    partesCodigo[1] == DateTime.Now.Year.ToString())
+                {
+                    int numero;
+
+                    if (int.TryParse(partesCodigo[2], out numero))
+                    {
+                        if (numero >= correlativo)
+                            correlativo = numero + 1;
+                    }
+                }
+            }
+        }
         private void button1_Click(object sender, EventArgs e)
         {
 
@@ -134,6 +226,9 @@ namespace Mesa_de_Partes_1
 
             // Aumentamos el correlativo para el siguiente expediente
             correlativo++;
+
+            // Guardamos todos los expedientes en el archivo TXT
+            GuardarArchivo();
 
             MessageBox.Show(
                 "Expediente registrado correctamente: " + codigoExpediente,
